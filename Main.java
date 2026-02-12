@@ -1,3 +1,4 @@
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 import java.io.File;
@@ -36,12 +37,19 @@ public class Main {
         int onePair = 0;
         int highCard = 0;
 
+        //arrays that will store the bid and hand type of each hand
+        String[] handType = new String[lines.length];
+        String[] bid = new String[lines.length];
 
-        for(String line : lines)
+        for(int i = 0; i < lines.length - 1; i++)
         {
+            String line = lines[i];
+
             String[] cards = line.split(",");
             String[] temp = cards[cards.length - 1].split("\\|");
             cards[cards.length - 1] = temp[0];
+
+            bid[i] = temp[1];
 
             System.out.println(Arrays.toString(cards));
 
@@ -63,7 +71,7 @@ public class Main {
             //counter variable for number of pairs
             int numPairs = 0;
 
-                //now we iterate through the whole list to see which cards we have and add to the corresponding variable
+            //now we iterate through the whole list to see which cards we have and add to the corresponding variable
             for(String card : cards)
             {
                 if(card.equals("Ace"))
@@ -96,18 +104,26 @@ public class Main {
 
             //now we look at the counters and see if we have a five of a kind, four of a kind, or a three of a kind
             if(ace == 5 | king == 5| queen == 5| jack == 5| ten == 5| nine == 5| eight == 5| seven == 5| six == 5| five == 5| four == 5| three == 5| two == 5)
-            { fiveOfKind ++; }
+            {
+                fiveOfKind ++;
+                handType[i] = "Five Of A Kind";
+            }
             else if(ace == 4 | king == 4| queen == 4| jack == 4| ten == 4| nine == 4| eight == 4| seven == 4| six == 4| five == 4| four == 4| three == 4| two == 4)
-            { fourOfKind ++; }
+            {
+                fourOfKind ++;
+                handType[i] = "Four Of A Kind";
+            }
             else if(ace == 3 | king == 3| queen == 3| jack == 3| ten == 3| nine == 3| eight == 3| seven == 3| six == 3| five == 3| four == 3| three == 3| two == 3)
             {
                 if(ace == 2 | king == 2| queen == 2| jack == 2| ten == 2| nine == 2| eight == 2| seven == 2| six == 2| five == 2| four == 2| three == 2| two == 2)
                 {
                     fullHouse ++;
+                    handType[i] = "Full House";
                 }
                 else
                 {
                     threeOfKind ++;
+                    handType[i] = "Four Of A Kind";
                 }
             }
             else
@@ -146,9 +162,13 @@ public class Main {
                 else
                 { highCard ++; }
             }
-            System.out.println(Arrays.toString(cards));
+//            System.out.println(Arrays.toString(cards));
+
+            //Part 2
 
         }
+
+        //Part 2
 
         System.out.println("Number of five of a kind hands: " + fiveOfKind);
         System.out.println("Number of full house hands: " + fullHouse);
@@ -157,6 +177,7 @@ public class Main {
         System.out.println("Number of two pair hands: " + twoPair);
         System.out.println("Number of one pair hands: " + onePair);
         System.out.println("Number of high card hands: " + highCard);
+
 
     }
 }
