@@ -25,6 +25,8 @@ public class Main {
 
         String[] lines = fileData.split("\n");
 
+        HandInfo[] hands = new HandInfo[lines.length];
+
         //counter variable for each type of hand
         int fiveOfKind = 0;
         int fullHouse = 0;
@@ -33,9 +35,6 @@ public class Main {
         int twoPair = 0;
         int onePair = 0;
         int highCard = 0;
-
-        String[] handType = new String[lines.length];
-        int[] bid = new int[lines.length];
 
         int totalBid = 0;
 
@@ -47,7 +46,7 @@ public class Main {
             String[] cards = line.split(",");
             String[] temp = cards[cards.length - 1].split("\\|");
             cards[cards.length - 1] = temp[0];
-            bid[i] = Integer.parseInt(temp[1]);
+            int thisBid = Integer.parseInt(temp[1]);
 //            System.out.println(Arrays.toString(cards));
 //            System.out.println(Arrays.toString(bid));
 
@@ -87,46 +86,35 @@ public class Main {
             }
 
             Hand hand = new Hand(cards);
-            if(hand.fiveOfKind(counters))
-            {
-                fiveOfKind ++;
-                handType[i] = "Five Of Kind";
-            }
-            else if(hand.fourOfKind(counters))
-            {
-                fourOfKind ++;
-                handType[i] = "Four Of Kind";
-            }
-            else if(hand.fullHouse(counters))
-            {
-                fullHouse ++;
-                handType[i] = "Full House";
-            }
-            else if(hand.threeOfKind(counters))
-            {
-                threeOfKind ++;
-                handType[i] = "Third Of Kind";
-            }
-            else
-            {
-                if(hand.twoOneOrNone(counters) == 2)
-                {
-                    twoPair ++;
-                    handType[i] = "Two Pairs";
-                }
-                if(hand.twoOneOrNone(counters) == 1)
-                {
-                    onePair ++;
-                    handType[i] = "One Pair";
-                }
-                if(hand.twoOneOrNone(counters) == 0)
-                {
-                    highCard ++;
-                    handType[i] = "High Card";
-                }
-            }
+            hands[i] = new HandInfo(cards, thisBid, hand, counters);
+             int cat = hands[i].category;
+             if(cat == 7) {fiveOfKind ++;}
+             else if(cat == 6) {fourOfKind ++;}
+             else if(cat == 5) {fullHouse ++;}
+             else if(cat == 4) {threeOfKind ++;}
+             else if(cat == 3) {twoPair ++;}
+             else if(cat == 2) {onePair ++;}
+             else if (cat == 1) {highCard ++;}
+        }
 
+        for(int i = 0; i < hands.length; i++)
+        {
+            int weakerCount = 0;
+            for(int j = 0; j < hands.length; j++)
+            {
+                if (i == j) continue;
+                int cmp = HandUtils.compareHands(hands[j], hands[i]);
 
+                if (cmp == -1)
+                {
+                    weakerCount ++;
+                }
+            }
+            hands[i].rank = weakerCount + 1;
+        }
+        for(int i = 0; i < hands.length; i++)
+        {
+            totalBid += hands[i].bid * hands[i].rank;
         }
 
         System.out.println("Number of five of a kind hands: " + fiveOfKind);
@@ -137,6 +125,7 @@ public class Main {
         System.out.println("Number of one pair hands: " + onePair);
         System.out.println("Number of high card hands: " + highCard);
         System.out.println("Total Bid: " + totalBid);
+
 //        System.out.println(Arrays.toString(handType));
 
     }

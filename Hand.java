@@ -2,15 +2,10 @@ import java.util.Arrays;
 
 public class Hand {
     private String[] cards;
-    int bid;
-
-    private int[] cardStrength;
-    private int[] handHierarchy;
 
     public Hand (String[] hand)
     {
         cards = hand;
-        cardStrength = setCardValues(hand);
     }
 
     public boolean fiveOfKind(int[] counters)
@@ -107,11 +102,20 @@ public class Hand {
         return strength;
     }
 
-
-
-    public void getInfo()
+    public int getCategory(int[] counters)
     {
-//        System.out.println(Arrays.toString(cards));
-        System.out.println(Arrays.toString(cardStrength));
+        if(fiveOfKind(counters)) return 7;
+        else if(fourOfKind(counters)) return 6;
+        else if(fullHouse(counters)) return 5;
+        else if (threeOfKind(counters)) return 4;
+        else
+        {
+            int pairs = twoOneOrNone(counters);
+
+            if (pairs == 2) return 3;
+            else if (pairs == 1) return 2;
+            else return 1;
+        }
     }
+
 }
