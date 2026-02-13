@@ -2,10 +2,15 @@ import java.util.Arrays;
 
 public class Hand {
     private String[] cards;
+    int bid;
+
+    private int[] cardStrength;
+    private int[] handHierarchy;
 
     public Hand (String[] hand)
     {
         cards = hand;
+        cardStrength = setCardValues(hand);
     }
 
     public boolean fiveOfKind(int[] counters)
@@ -79,8 +84,34 @@ public class Hand {
         return pairs;
     }
 
+    public int[] setCardValues(String[] hand)
+    {
+        int[] strength = new int[hand.length];
+        for(int i = 0; i < hand.length - 1; i++)
+        {
+            String card = hand[i];
+            if(card == "Ace") { strength[i] = 14;}
+            if(card == "King") {strength[i] = 13;}
+            if(card == "Queen") {strength[i] = 12;}
+            if(card == "Jack") {strength[i] = 11;}
+            if(card == "10") {strength[i] = 10;}
+            if(card == "9") {strength[i] = 9;}
+            if(card == "8") {strength[i] = 8;}
+            if(card == "7") {strength[i] = 7;}
+            if(card == "6") {strength[i] = 6;}
+            if(card == "5") {strength[i] = 5;}
+            if(card == "4") {strength[i] = 4;}
+            if(card == "3") {strength[i] = 3;}
+            if(card == "2") {strength[i] = 2;}
+        }
+        return strength;
+    }
+
+
+
     public void getInfo()
     {
-        System.out.println(Arrays.toString(cards));
+//        System.out.println(Arrays.toString(cards));
+        System.out.println(Arrays.toString(cardStrength));
     }
 }
