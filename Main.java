@@ -1,4 +1,3 @@
-
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 import java.io.File;
@@ -13,7 +12,7 @@ public class Main {
             File f = new File("src/data");
             Scanner s = new Scanner(f);
 
-            while (s.hasNextLine())
+            while(s.hasNextLine())
             {
                 String line = s.nextLine();
                 fileData += line + "\n";
@@ -26,8 +25,6 @@ public class Main {
 
         String[] lines = fileData.split("\n");
 
-        //Part 1
-
         //counter variable for each type of hand
         int fiveOfKind = 0;
         int fullHouse = 0;
@@ -37,138 +34,100 @@ public class Main {
         int onePair = 0;
         int highCard = 0;
 
-        //arrays that will store the bid and hand type of each hand
         String[] handType = new String[lines.length];
-        String[] bid = new String[lines.length];
+        int[] bid = new int[lines.length];
 
-        for(int i = 0; i < lines.length - 1; i++)
+        int totalBid = 0;
+
+        //goes through every line/hand in the data set
+        for(int i = 0; i < lines.length; i++)
         {
             String line = lines[i];
 
             String[] cards = line.split(",");
             String[] temp = cards[cards.length - 1].split("\\|");
             cards[cards.length - 1] = temp[0];
+            bid[i] = Integer.parseInt(temp[1]);
+//            System.out.println(Arrays.toString(cards));
+//            System.out.println(Arrays.toString(bid));
 
-            bid[i] = temp[1];
+            //below is an array where each index corresponds to a specific card type
+            //0=ace, 1=king,2=queen, 3=jack, 4=ten, 5=nine, 6=eight, 7=seven, 8=six, 9=five, 10=four, 11=three, 12=two
+            int[] counters = new int[13];
 
-            System.out.println(Arrays.toString(cards));
-
-            //counter variable for each type of card
-            int ace = 0;
-            int king = 0;
-            int queen = 0;
-            int jack = 0;
-            int two = 0;
-            int three = 0;
-            int four = 0;
-            int five = 0;
-            int six = 0;
-            int seven = 0;
-            int eight = 0;
-            int nine = 0;
-            int ten = 0;
-
-            //counter variable for number of pairs
-            int numPairs = 0;
-
-            //now we iterate through the whole list to see which cards we have and add to the corresponding variable
+            //checks for what cards are in the hand, and adds one to the corresponding counter in the array
             for(String card : cards)
             {
                 if(card.equals("Ace"))
-                { ace ++; }
+                { counters[0] ++; }
                 else if(card.equals("King"))
-                { king ++; }
+                { counters[1] ++; }
                 else if(card.equals("Queen"))
-                { queen ++; }
+                { counters[2] ++; }
                 else if(card.equals("Jack"))
-                { jack ++; }
+                { counters[3] ++; }
                 else if(card.equals("10"))
-                { ten ++; }
+                { counters[4] ++; }
                 else if(card.equals("9"))
-                { nine ++; }
+                { counters[5] ++; }
                 else if(card.equals("8"))
-                { eight ++; }
+                { counters[6] ++; }
                 else if(card.equals("7"))
-                { seven ++; }
+                { counters[7] ++; }
                 else if(card.equals("6"))
-                { six ++; }
+                { counters[8] ++; }
                 else if(card.equals("5"))
-                { five ++; }
+                { counters[9] ++; }
                 else if(card.equals("4"))
-                { four ++; }
+                { counters[10] ++; }
                 else if(card.equals("3"))
-                { three ++; }
+                { counters[11] ++; }
                 else
-                { two ++; }
+                { counters[12] ++; }
             }
 
-            //now we look at the counters and see if we have a five of a kind, four of a kind, or a three of a kind
-            if(ace == 5 | king == 5| queen == 5| jack == 5| ten == 5| nine == 5| eight == 5| seven == 5| six == 5| five == 5| four == 5| three == 5| two == 5)
+            Hand hand = new Hand(cards);
+            if(hand.fiveOfKind(counters))
             {
                 fiveOfKind ++;
-                handType[i] = "Five Of A Kind";
+                handType[i] = "Five Of Kind";
             }
-            else if(ace == 4 | king == 4| queen == 4| jack == 4| ten == 4| nine == 4| eight == 4| seven == 4| six == 4| five == 4| four == 4| three == 4| two == 4)
+            else if(hand.fourOfKind(counters))
             {
                 fourOfKind ++;
-                handType[i] = "Four Of A Kind";
+                handType[i] = "Four Of Kind";
             }
-            else if(ace == 3 | king == 3| queen == 3| jack == 3| ten == 3| nine == 3| eight == 3| seven == 3| six == 3| five == 3| four == 3| three == 3| two == 3)
+            else if(hand.fullHouse(counters))
             {
-                if(ace == 2 | king == 2| queen == 2| jack == 2| ten == 2| nine == 2| eight == 2| seven == 2| six == 2| five == 2| four == 2| three == 2| two == 2)
-                {
-                    fullHouse ++;
-                    handType[i] = "Full House";
-                }
-                else
-                {
-                    threeOfKind ++;
-                    handType[i] = "Four Of A Kind";
-                }
+                fullHouse ++;
+                handType[i] = "Full House";
+            }
+            else if(hand.threeOfKind(counters))
+            {
+                threeOfKind ++;
+                handType[i] = "Third Of Kind";
             }
             else
             {
-                if(ace == 2)
-                { numPairs ++; }
-                if(king == 2)
-                { numPairs ++; }
-                if(queen == 2)
-                { numPairs ++; }
-                if(jack == 2)
-                { numPairs ++; }
-                if(two == 2)
-                { numPairs ++; }
-                if(three == 2)
-                { numPairs ++; }
-                if(four == 2)
-                { numPairs ++; }
-                if(five == 2)
-                { numPairs ++; }
-                if(six == 2)
-                { numPairs ++; }
-                if(seven == 2)
-                { numPairs ++; }
-                if(eight == 2)
-                { numPairs ++; }
-                if(nine == 2)
-                { numPairs ++; }
-                if( ten == 2)
-                { numPairs ++; }
-
-                if(numPairs == 2)
-                { twoPair ++; }
-                else if(numPairs == 1)
-                { onePair ++; }
-                else
-                { highCard ++; }
+                if(hand.twoOneOrNone(counters) == 2)
+                {
+                    twoPair ++;
+                    handType[i] = "Two Pairs";
+                }
+                if(hand.twoOneOrNone(counters) == 1)
+                {
+                    onePair ++;
+                    handType[i] = "One Pair";
+                }
+                if(hand.twoOneOrNone(counters) == 0)
+                {
+                    highCard ++;
+                    handType[i] = "High Card";
+                }
             }
-//            System.out.println(Arrays.toString(cards));
 
-            //Part 2
 
         }
-
-        //Part 2
 
         System.out.println("Number of five of a kind hands: " + fiveOfKind);
         System.out.println("Number of full house hands: " + fullHouse);
@@ -177,7 +136,8 @@ public class Main {
         System.out.println("Number of two pair hands: " + twoPair);
         System.out.println("Number of one pair hands: " + onePair);
         System.out.println("Number of high card hands: " + highCard);
-
+        System.out.println("Total Bid: " + totalBid);
+//        System.out.println(Arrays.toString(handType));
 
     }
 }
